@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "bingocraft",
+  "version": "${version}",
+  "name": "BingoCraft",
+  "description": "Item bingo for Minecraft. Race your friends on a shared card, or play an endless survival bingo where every completed card earns a reward and deals you a new one.",
+  "authors": [
+    "Remilulz_91"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Remilulz91/BingoCraft",
+    "sources": "https://github.com/Remilulz91/BingoCraft",
+    "issues": "https://github.com/Remilulz91/BingoCraft/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/bingocraft/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "fr.bingocraft.BingoCraft"
+    ],
+    "client": [
+      "fr.bingocraft.client.BingoCraftClient"
+    ],
+    "modmenu": [
+      "fr.bingocraft.client.config.ModMenuIntegration"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=21"
+  },
+  "recommends": {
+    "cloth-config": "*",
+    "modmenu": "*"
+  }
+}
