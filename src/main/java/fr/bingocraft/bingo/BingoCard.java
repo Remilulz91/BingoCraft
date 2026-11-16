@@ -6,6 +6,8 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -50,6 +52,14 @@ public final class BingoCard {
     /** The item of this cell, or null if its mod is no longer installed. */
     public Item item(int index) {
         return items[index];
+    }
+
+    /** Display name of a goal; the raw id, struck through, if its mod is gone. */
+    public Text goalName(int index) {
+        Item item = items[index];
+        return item != null
+                ? Text.translatable(item.getTranslationKey())
+                : Text.literal(goals[index].toString()).formatted(Formatting.STRIKETHROUGH);
     }
 
     public boolean isDone(int index) {

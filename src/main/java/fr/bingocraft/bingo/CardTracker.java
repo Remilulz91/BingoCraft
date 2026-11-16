@@ -1,6 +1,7 @@
 package fr.bingocraft.bingo;
 
 import fr.bingocraft.config.BingoCraftConfig;
+import fr.bingocraft.screen.CardScreenHandler;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -73,12 +74,16 @@ public final class CardTracker {
         int done = card.completedCount();
         int total = card.cellCount();
         player.sendMessage(Text.translatable("bingocraft.goal.done",
-                        CardChat.goalName(card, index).copy().formatted(Formatting.WHITE),
+                        card.goalName(index).copy().formatted(Formatting.WHITE),
                         done, total)
                 .formatted(Formatting.GREEN), false);
 
+        CardScreenHandler.refresh(player, card);
+
         if (card.isComplete()) {
-            player.sendMessage(Text.translatable("bingocraft.card.complete").formatted(Formatting.GOLD, Formatting.BOLD), false);
+            player.server.getPlayerManager().broadcast(
+                    Text.translatable("bingocraft.card.complete", player.getDisplayName())
+                            .formatted(Formatting.GOLD, Formatting.BOLD), false);
             player.getWorld().playSound(null, player.getBlockPos(),
                     SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0f, 1.0f);
         } else {

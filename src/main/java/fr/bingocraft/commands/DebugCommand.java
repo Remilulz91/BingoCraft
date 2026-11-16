@@ -8,8 +8,7 @@ import fr.bingocraft.bingo.BingoCard;
 import fr.bingocraft.bingo.BingoState;
 import fr.bingocraft.bingo.CardGenerator;
 import fr.bingocraft.bingo.CardTracker;
-import fr.bingocraft.bingo.Difficulty;
-import fr.bingocraft.bingo.GoalPools;
+import fr.bingocraft.bingo.GoalFilter;
 import fr.bingocraft.config.BingoCraftConfig;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -23,7 +22,7 @@ import java.util.Random;
  * /bingo debug subcommands. Only available in the DEBUG build (OP level 2).
  *
  *   /bingo debug info              - print runtime debug info
- *   /bingo debug pools             - number of goals loaded per difficulty
+ *   /bingo debug pool              - number of items a card can draw from
  *   /bingo debug new [size]        - deal yourself a new card (size 3-5, default from config)
  *   /bingo debug complete <cell>   - mark cell n (1 = top left, row by row) as done
  *   /bingo debug clear             - remove your card
@@ -35,8 +34,8 @@ public class DebugCommand {
                 .requires(src -> BingoCraft.isDebugBuild() && src.hasPermissionLevel(2))
                 .then(CommandManager.literal("info")
                         .executes(DebugCommand::onInfo))
-                .then(CommandManager.literal("pools")
-                        .executes(DebugCommand::onPools))
+                .then(CommandManager.literal("pool")
+                        .executes(DebugCommand::onPool))
                 .then(CommandManager.literal("new")
                         .executes(ctx -> onNew(ctx, BingoCraftConfig.get().cardSize))
                         .then(CommandManager.argument("size",
@@ -58,18 +57,18 @@ public class DebugCommand {
         return 1;
     }
 
-    private static int onPools(CommandContext<ServerCommandSource> ctx) {
-        for (Difficulty d : Difficulty.values()) {
-            ctx.getSource().sendFeedback(() -> Text.literal(" " + d.id() + ": " + GoalPools.size(d) + " goals")
-                    .formatted(Formatting.GRAY), false);
-        }
+    private static int onPool(CommandContext<ServerCommandSource> ctx) {
+        int eligible = GoalFilter.candidates(ctx.getSource().getServer()).size();
+        int total = net.minecraft.registry.Registries.ITEM.size();
+        ctx.getSource().sendFeedback(() -> Text.literal(" " + eligible + " / " + total
+                + " items can appear on a card").formatted(Formatting.GRAY), false);
         return 1;
     }
 
     private static int onNew(CommandContext<ServerCommandSource> ctx, int size) {
         ServerPlayerEntity player = ctx.getSource().getPlayer();
         if (player == null) return playersOnly(ctx);
-        BingoCard card = CardGenerator.generate(size, new Random());
+        BingoCard card = CardGenerator.generate(size, ctx.getSource().getServer(), new Random());
         if (card == null) {
             ctx.getSource().sendError(Text.translatable("bingocraft.card.pool_too_small", size * size));
             return 0;

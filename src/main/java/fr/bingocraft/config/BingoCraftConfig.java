@@ -33,11 +33,6 @@ public class BingoCraftConfig {
     /** Side of a new card: 3 (3x3), 4 (4x4) or 5 (5x5). */
     public int cardSize = 5;
 
-    /** Difficulty mix of a new card, as relative weights (40 / 40 / 20 = 10 easy, 10 medium, 5 hard on a 5x5). */
-    public int easyPercent = 40;
-    public int mediumPercent = 40;
-    public int hardPercent = 20;
-
     /** Ticks between two inventory checks (20 ticks = 1 second). */
     public int checkIntervalTicks = 10;
 

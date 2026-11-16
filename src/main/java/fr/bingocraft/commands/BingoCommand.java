@@ -5,8 +5,8 @@ import com.mojang.brigadier.context.CommandContext;
 import fr.bingocraft.BingoCraft;
 import fr.bingocraft.bingo.BingoCard;
 import fr.bingocraft.bingo.BingoState;
-import fr.bingocraft.bingo.CardChat;
 import fr.bingocraft.config.BingoCraftConfig;
+import fr.bingocraft.screen.CardScreenHandler;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -16,7 +16,7 @@ import net.minecraft.util.Formatting;
 
 /**
  * /bingo administrative + utility commands:
- *   /bingo card      - show your card in chat
+ *   /bingo card      - open your card (double chest view)
  *   /bingo version   - print mod version + build type
  *   /bingo reload    - OP, reload config from disk
  *   /bingo debug ... - DEBUG build only
@@ -51,9 +51,7 @@ public class BingoCommand {
             ctx.getSource().sendError(Text.translatable("bingocraft.card.none"));
             return 0;
         }
-        for (Text line : CardChat.render(card)) {
-            ctx.getSource().sendFeedback(() -> line, false);
-        }
+        CardScreenHandler.open(player, card);
         return 1;
     }
 
