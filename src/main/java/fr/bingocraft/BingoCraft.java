@@ -1,5 +1,7 @@
 package fr.bingocraft;
 
+import fr.bingocraft.bingo.CardTracker;
+import fr.bingocraft.bingo.GoalPools;
 import fr.bingocraft.commands.BingoCommand;
 import fr.bingocraft.config.BingoCraftConfig;
 import net.fabricmc.api.ModInitializer;
@@ -60,7 +62,13 @@ public class BingoCraft implements ModInitializer {
         BingoCraftConfig.load();
         LOGGER.info("[BingoCraft] Configuration loaded");
 
-        // 2. Register commands (/bingo version, /bingo reload, /bingo debug ...)
+        // 2. Goal pools (data/<namespace>/bingo_pools/*.json, reloaded with /reload)
+        GoalPools.register();
+
+        // 3. Card tracking: inventories are checked against the cards every few ticks
+        CardTracker.register();
+
+        // 4. Register commands (/bingo version, /bingo reload, /bingo debug ...)
         CommandRegistrationCallback.EVENT.register(BingoCommand::register);
         LOGGER.info("[BingoCraft] Commands registered");
 

@@ -20,10 +20,31 @@ public final class BingoCraftConfigScreen {
                 .setTitle(Text.translatable("config.bingocraft.title"))
                 .setSavingRunnable(BingoCraftConfig::save);
 
+        BingoCraftConfig cfg = BingoCraftConfig.get();
         ConfigEntryBuilder entry = builder.entryBuilder();
 
-        ConfigCategory general = builder.getOrCreateCategory(Text.translatable("config.bingocraft.category.general"));
-        general.addEntry(entry.startTextDescription(Text.translatable("config.bingocraft.general.description")).build());
+        // === Cards category ===
+        ConfigCategory cards = builder.getOrCreateCategory(Text.translatable("config.bingocraft.category.cards"));
+        cards.addEntry(entry.startIntSlider(Text.translatable("config.bingocraft.cardSize"), cfg.cardSize, 3, 5)
+                .setDefaultValue(5)
+                .setTooltip(Text.translatable("config.bingocraft.cardSize.tooltip"))
+                .setSaveConsumer(v -> cfg.cardSize = v).build());
+        cards.addEntry(entry.startIntSlider(Text.translatable("config.bingocraft.easyPercent"), cfg.easyPercent, 0, 100)
+                .setDefaultValue(40)
+                .setTooltip(Text.translatable("config.bingocraft.mix.tooltip"))
+                .setSaveConsumer(v -> cfg.easyPercent = v).build());
+        cards.addEntry(entry.startIntSlider(Text.translatable("config.bingocraft.mediumPercent"), cfg.mediumPercent, 0, 100)
+                .setDefaultValue(40)
+                .setTooltip(Text.translatable("config.bingocraft.mix.tooltip"))
+                .setSaveConsumer(v -> cfg.mediumPercent = v).build());
+        cards.addEntry(entry.startIntSlider(Text.translatable("config.bingocraft.hardPercent"), cfg.hardPercent, 0, 100)
+                .setDefaultValue(20)
+                .setTooltip(Text.translatable("config.bingocraft.mix.tooltip"))
+                .setSaveConsumer(v -> cfg.hardPercent = v).build());
+        cards.addEntry(entry.startIntField(Text.translatable("config.bingocraft.checkIntervalTicks"), cfg.checkIntervalTicks)
+                .setMin(1).setMax(200).setDefaultValue(10)
+                .setTooltip(Text.translatable("config.bingocraft.checkIntervalTicks.tooltip"))
+                .setSaveConsumer(v -> cfg.checkIntervalTicks = v).build());
 
         return builder.build();
     }

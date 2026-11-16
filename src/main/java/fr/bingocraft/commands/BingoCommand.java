@@ -3,15 +3,20 @@ package fr.bingocraft.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import fr.bingocraft.BingoCraft;
+import fr.bingocraft.bingo.BingoCard;
+import fr.bingocraft.bingo.BingoState;
+import fr.bingocraft.bingo.CardChat;
 import fr.bingocraft.config.BingoCraftConfig;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 /**
  * /bingo administrative + utility commands:
+ *   /bingo card      - show your card in chat
  *   /bingo version   - print mod version + build type
  *   /bingo reload    - OP, reload config from disk
  *   /bingo debug ... - DEBUG build only
@@ -24,6 +29,8 @@ public class BingoCommand {
             CommandManager.RegistrationEnvironment environment
     ) {
         dispatcher.register(CommandManager.literal("bingo")
+                .then(CommandManager.literal("card")
+                        .executes(BingoCommand::onCard))
                 .then(CommandManager.literal("version")
                         .executes(BingoCommand::onVersion))
                 .then(CommandManager.literal("reload")
@@ -31,6 +38,23 @@ public class BingoCommand {
                         .executes(BingoCommand::onReload))
                 .then(DebugCommand.build())
         );
+    }
+
+    private static int onCard(CommandContext<ServerCommandSource> ctx) {
+        ServerPlayerEntity player = ctx.getSource().getPlayer();
+        if (player == null) {
+            ctx.getSource().sendError(Text.translatable("bingocraft.command.players_only"));
+            return 0;
+        }
+        BingoCard card = BingoState.get(ctx.getSource().getServer()).get(player.getUuid());
+        if (card == null) {
+            ctx.getSource().sendError(Text.translatable("bingocraft.card.none"));
+            return 0;
+        }
+        for (Text line : CardChat.render(card)) {
+            ctx.getSource().sendFeedback(() -> line, false);
+        }
+        return 1;
     }
 
     private static int onVersion(CommandContext<ServerCommandSource> ctx) {

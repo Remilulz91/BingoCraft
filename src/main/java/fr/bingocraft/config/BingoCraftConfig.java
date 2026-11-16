@@ -28,6 +28,19 @@ public class BingoCraftConfig {
 
     private static BingoCraftConfig INSTANCE = new BingoCraftConfig();
 
+    // === Cards ===
+
+    /** Side of a new card: 3 (3x3), 4 (4x4) or 5 (5x5). */
+    public int cardSize = 5;
+
+    /** Difficulty mix of a new card, as relative weights (40 / 40 / 20 = 10 easy, 10 medium, 5 hard on a 5x5). */
+    public int easyPercent = 40;
+    public int mediumPercent = 40;
+    public int hardPercent = 20;
+
+    /** Ticks between two inventory checks (20 ticks = 1 second). */
+    public int checkIntervalTicks = 10;
+
     // === Methods ===
 
     public static BingoCraftConfig get() {
@@ -42,6 +55,7 @@ public class BingoCraftConfig {
                 if (loaded != null) {
                     INSTANCE = loaded;
                 }
+                INSTANCE.cardSize = Math.max(3, Math.min(5, INSTANCE.cardSize));
                 save(); // rewrite so options added in newer versions appear in the file
                 BingoCraft.LOGGER.info("[Config] Configuration loaded from {}", CONFIG_PATH);
             } else {

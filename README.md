@@ -34,8 +34,23 @@ Grab the jar from the [Releases](https://github.com/Remilulz91/BingoCraft/releas
 
 | Command | Description |
 |---|---|
+| `/bingo card` | Show your card in chat |
 | `/bingo version` | Mod version and build type |
 | `/bingo reload` | Reload `config/bingocraft.json` (OP) |
+
+## Adding items (datapacks & modpacks)
+
+Goals come from JSON files under `data/<namespace>/bingo_pools/`. Every file found is merged:
+
+```json
+{ "difficulty": "hard", "items": ["minecraft:trident", "create:brass_ingot"] }
+```
+
+- `difficulty`: `easy`, `medium` or `hard`.
+- Items of mods that are not installed are ignored, so one file can cover optional mods.
+- To remove the vanilla goals, override `data/bingocraft/bingo_pools/vanilla_<difficulty>.json`
+  with an empty `items` list.
+- `/reload` reloads the pools; cards already dealt keep their goals.
 
 ## License
 

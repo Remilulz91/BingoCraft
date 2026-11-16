@@ -29,6 +29,8 @@ Only resource changes hot-reload; restart Minecraft for Java changes.
 - Localization keys live in `assets/bingocraft/lang/{en_us,fr_fr}.json` — keep both in sync.
 - Cloth Config classes are only referenced from `client/config/BingoCraftConfigScreen` (Cloth Config is optional).
 - Config options are added together with the code that reads them — no dead options.
+- Goals are data-driven (`data/<namespace>/bingo_pools/*.json`); the card logic is code-driven.
+- Every change to a card goes through `BingoState` so the save is marked dirty.
 
 ## Build variants (Public vs Debug)
 
@@ -46,12 +48,14 @@ src/main/
 ├── java/fr/bingocraft/
 │   ├── BingoCraft.java                 (main entry, build detection)
 │   ├── config/BingoCraftConfig.java    (config/bingocraft.json)
+│   ├── bingo/                          (Difficulty, GoalPools, BingoCard, CardGenerator, BingoState, CardTracker, CardChat)
 │   ├── commands/                       (BingoCommand, DebugCommand)
 │   └── client/                         (BingoCraftClient, config/ModMenuIntegration + BingoCraftConfigScreen)
 └── resources/
     ├── fabric.mod.json
     ├── bingocraft.build.properties
-    └── assets/bingocraft/              (icon.png, lang/)
+    ├── assets/bingocraft/              (icon.png, lang/)
+    └── data/bingocraft/bingo_pools/    (vanilla_easy / vanilla_medium / vanilla_hard.json)
 ```
 
 ## Releasing a new version
@@ -67,3 +71,7 @@ src/main/
 | Command | Description |
 |---|---|
 | `/bingo debug info` | Print runtime debug info |
+| `/bingo debug pools` | Number of goals loaded per difficulty |
+| `/bingo debug new [size]` | Deal yourself a new card (3-5, default from config) |
+| `/bingo debug complete <cell>` | Mark cell n as done (1 = top left, row by row) |
+| `/bingo debug clear` | Remove your card |

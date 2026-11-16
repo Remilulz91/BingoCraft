@@ -1,6 +1,22 @@
 {
   "bingocraft.command.reloaded": "Configuration de BingoCraft rechargée.",
+  "bingocraft.command.players_only": "Seul un joueur peut utiliser cette commande.",
+  "bingocraft.card.none": "Tu n'as pas de grille de bingo.",
+  "bingocraft.card.header": "Grille de bingo — %s/%s",
+  "bingocraft.card.hover_hint": "Survole une case pour voir son objet.",
+  "bingocraft.card.complete": "BINGO ! Grille complète !",
+  "bingocraft.card.pool_too_small": "Pas assez d'objectifs dans les listes pour une grille de %s cases.",
+  "bingocraft.goal.done": "✔ %s (%s/%s)",
+  "bingocraft.debug.new": "Nouvelle grille %sx%s distribuée. /bingo card pour la voir.",
+  "bingocraft.debug.cleared": "Grille supprimée.",
   "config.bingocraft.title": "BingoCraft",
-  "config.bingocraft.category.general": "Général",
-  "config.bingocraft.general.description": "Les options des modes de jeu apparaîtront ici au fur et à mesure."
+  "config.bingocraft.category.cards": "Grilles",
+  "config.bingocraft.cardSize": "Taille de la grille",
+  "config.bingocraft.cardSize.tooltip": "Côté d'une nouvelle grille : 3 = 3x3, 4 = 4x4, 5 = 5x5. Les grilles existantes gardent leur taille.",
+  "config.bingocraft.easyPercent": "Objectifs faciles (poids)",
+  "config.bingocraft.mediumPercent": "Objectifs moyens (poids)",
+  "config.bingocraft.hardPercent": "Objectifs difficiles (poids)",
+  "config.bingocraft.mix.tooltip": "Part relative de chaque difficulté sur une nouvelle grille. 40 / 40 / 20 donne 10 faciles, 10 moyens et 5 difficiles sur une 5x5.",
+  "config.bingocraft.checkIntervalTicks": "Intervalle de vérification (ticks)",
+  "config.bingocraft.checkIntervalTicks.tooltip": "Fréquence de comparaison des inventaires avec les grilles. 20 ticks = 1 seconde."
 }
