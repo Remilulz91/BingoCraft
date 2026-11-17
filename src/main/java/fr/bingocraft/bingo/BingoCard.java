@@ -86,8 +86,10 @@ public final class BingoCard {
         return completedCount() == done.length;
     }
 
-    /** True if a whole row or a whole column is done (diagonals don't count). */
-    public boolean hasRowOrColumn() {
+    /** True if a whole row, column or diagonal is done. */
+    public boolean hasLine() {
+        boolean diagonal = true;
+        boolean antiDiagonal = true;
         for (int i = 0; i < size; i++) {
             boolean row = true;
             boolean col = true;
@@ -96,8 +98,10 @@ public final class BingoCard {
                 col &= done[j * size + i];
             }
             if (row || col) return true;
+            diagonal &= done[i * size + i];
+            antiDiagonal &= done[i * size + (size - 1 - i)];
         }
-        return false;
+        return diagonal || antiDiagonal;
     }
 
     /** Same goals, nothing done: every team of a race plays its own copy of one card. */

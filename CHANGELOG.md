@@ -10,7 +10,9 @@ All notable changes to BingoCraft will be documented in this file.
   only online players race.
 
 ### Changed
-- After a race everybody is sent back to spawn in **creative** mode.
+- Race: **diagonals win again** — first full row, column or diagonal.
+- After a race everybody is sent back to spawn in **creative** mode and bingo is switched
+  **off** (`/bingo mode` to start again): everything restarts from scratch.
 - Dev runs (`./gradlew runClient`) use a fixed player name (`Remilulz_91`, or
   `-PdevUsername=<name>`) instead of Loom's random `PlayerNNN`, so the same offline UUID — card,
   team, inventory — comes back every launch.

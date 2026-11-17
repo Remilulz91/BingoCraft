@@ -11,7 +11,7 @@ public enum BingoMode {
     NONE,
     /** Every player always has a card; completing it gives a reward and a new card. */
     ENDLESS,
-    /** Players pick teams, an OP runs /bingo start, first team to a line or column wins. */
+    /** Players pick teams, an OP runs /bingo start, first team to a row, column or diagonal wins. */
     RACE;
 
     public String id() {

@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * A race: one 5x5 card, every team plays its own copy; the first full row or column wins. Teams are frozen at /bingo start
+ * A race: one 5x5 card, every team plays its own copy; the first full row, column or diagonal wins. Teams are frozen at /bingo start
  * ({@link #members}): changing scoreboard team during the race changes nothing.
  * Saved with the world through {@code BingoState}, so a race survives a restart.
  */

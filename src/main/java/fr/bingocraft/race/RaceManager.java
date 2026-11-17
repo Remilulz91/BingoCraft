@@ -43,8 +43,8 @@ import java.util.UUID;
  * player chose a team or to spectate ({@code /bingo team}), freezes the teams and runs a 10 s
  * countdown. At GO every racer is cleared, put in survival and dropped from the top of the world
  * at their team's random spot, with a minute of fall protection, regeneration and saturation;
- * spectators switch to spectator mode where they are. The first team to fill a row or a column
- * wins. 30 s later (last 10 s counted down) everybody is sent back to the world spawn in creative
+ * spectators switch to spectator mode where they are. The first team to fill a row, a column or a
+ * diagonal wins. 30 s later (last 10 s counted down) everybody is sent back to the world spawn in creative
  * mode and the teams are dissolved.
  * Teams are locked from /bingo start until then.
  */
@@ -229,10 +229,12 @@ public final class RaceManager {
 
     /**
      * After a race: everybody online back to the world spawn in creative mode, all bingo teams
-     * dissolved and spectator choices forgotten, so teams are picked again.
+     * dissolved, spectator choices forgotten and bingo switched off: everything starts from
+     * scratch, an OP picks a mode again.
      */
     private static void reset(MinecraftServer server, BingoState state) {
         state.setRace(null);
+        state.setMode(BingoMode.NONE);
         ServerWorld world = server.getOverworld();
         BlockPos spawn = world.getSpawnPos();
         world.getChunk(spawn.getX() >> 4, spawn.getZ() >> 4);
@@ -244,7 +246,9 @@ public final class RaceManager {
             p.fallDistance = 0.0f;
         }
         Teams.clearAll(server);
-        for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) TeamScreenHandler.refresh(p);
+        for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+            if (p.currentScreenHandler instanceof TeamScreenHandler) p.closeHandledScreen();
+        }
         server.getPlayerManager().broadcast(Text.translatable("bingocraft.race.reset").formatted(Formatting.AQUA), false);
     }
 
@@ -299,7 +303,7 @@ public final class RaceManager {
             }
         }
 
-        if (card.hasRowOrColumn()) win(server, state, race, team);
+        if (card.hasLine()) win(server, state, race, team);
     }
 
     private static void win(MinecraftServer server, BingoState state, Race race, String team) {

@@ -12,7 +12,7 @@ A new world starts with bingo **off**. An OP picks the mode with `/bingo mode` (
 `/bingo mode endless|race|off`.
 
 ### Race
-Pick teams and race on the same 5x5 card. The first team to fill a **row or a column** wins.
+Pick teams and race on the same 5x5 card. The first team to fill a **row, a column or a diagonal** wins.
 
 1. `/bingo mode race` (OP).
 2. Everyone runs `/bingo team` and clicks a wool (8 teams) or the ender eye to spectate.
@@ -21,7 +21,7 @@ Pick teams and race on the same 5x5 card. The first team to fill a **row or a co
    1 minute of fall protection, regeneration and saturation. Spectators stay where they are and
    can teleport to players with the vanilla spectator menu.
 4. 30 seconds after the win (last 10 counted down), everybody is sent back to spawn in creative
-   mode and teams are dissolved.
+   mode, teams are dissolved and bingo is switched off.
 
 Teams are locked during a race. `/bingo stop` (OP) cancels it.
 
