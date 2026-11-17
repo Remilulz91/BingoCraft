@@ -25,6 +25,17 @@ base {
 
 println "==> Building BingoCraft v${version} (type: ${buildType})"
 
+// Dev runs get a fixed player name instead of Loom's random "PlayerNNN", so the same offline
+// UUID comes back every launch (same card, same team, same inventory).
+// Second client for LAN tests: ./gradlew runClient -PdevUsername=Player2
+loom {
+    runs {
+        client {
+            programArgs "--username", (project.findProperty('devUsername') ?: 'Remilulz_91').toString()
+        }
+    }
+}
+
 repositories {
     maven {
         name = "Terraformers"

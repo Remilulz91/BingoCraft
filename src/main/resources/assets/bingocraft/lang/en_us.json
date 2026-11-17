@@ -85,5 +85,7 @@
   "bingocraft.mode.hint.race": "Pick your team with /bingo team, then an admin starts with /bingo start.",
   "bingocraft.mode.already": "The mode is already %s.",
   "bingocraft.mode.race_in_progress": "A race is in progress: /bingo stop first.",
-  "bingocraft.mode.none_active": "No bingo mode is active. An admin picks one with /bingo mode."
+  "bingocraft.mode.none_active": "No bingo mode is active. An admin picks one with /bingo mode.",
+  "bingocraft.race.returning_in": "Back to spawn in %s s…",
+  "bingocraft.teams.offline": "(offline)"
 }

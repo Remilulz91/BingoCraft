@@ -23,6 +23,8 @@ Output in `build/libs/bingocraft-<version>[-debug].jar`.
 
 Only resource changes hot-reload; restart Minecraft for Java changes.
 
+Dev clients log in as `Remilulz_91`. For a second client (LAN tests): `./gradlew runClient -PdevUsername=Player2`.
+
 ## Project conventions
 
 - Debug features are gated on `BingoCraft.isDebugBuild()` — always guard behind this.

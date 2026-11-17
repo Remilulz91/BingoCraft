@@ -2,6 +2,19 @@
 
 All notable changes to BingoCraft will be documented in this file.
 
+## [0.5.0-alpha.1] — 2026-11-17
+
+### Added
+- The last 10 seconds before the return to spawn are counted down in the action bar, with a tick sound.
+- Team picker: offline members are greyed out and marked "(offline)" — they keep their team but
+  only online players race.
+
+### Changed
+- After a race everybody is sent back to spawn in **creative** mode.
+- Dev runs (`./gradlew runClient`) use a fixed player name (`Remilulz_91`, or
+  `-PdevUsername=<name>`) instead of Loom's random `PlayerNNN`, so the same offline UUID — card,
+  team, inventory — comes back every launch.
+
 ## [0.4.0-alpha.1] — 2026-11-17
 
 ### Added

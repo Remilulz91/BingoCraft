@@ -114,19 +114,28 @@ public class TeamScreenHandler extends GenericContainerScreenHandler {
             BingoTeam team = BingoTeam.values()[i];
             Team scoreboardTeam = player.server.getScoreboard().getTeam(team.scoreboardName());
             List<String> members = scoreboardTeam != null ? new ArrayList<>(scoreboardTeam.getPlayerList()) : List.of();
-            display.setStack(TEAM_SLOTS[i], choice(team.wool().getDefaultStack(),
+            display.setStack(TEAM_SLOTS[i], choice(player, team.wool().getDefaultStack(),
                     Text.translatable("bingocraft.teams.team", team.displayName()).formatted(team.color(), Formatting.BOLD),
                     members, team == current, locked));
         }
-        display.setStack(SPECTATOR_SLOT, choice(Items.ENDER_EYE.getDefaultStack(),
+        display.setStack(SPECTATOR_SLOT, choice(player, Items.ENDER_EYE.getDefaultStack(),
                 Text.translatable("bingocraft.teams.spectator").formatted(Formatting.WHITE, Formatting.BOLD),
                 List.of(), Teams.isSpectator(player), locked));
     }
 
-    private static ItemStack choice(ItemStack stack, Text name, List<String> members, boolean selected, boolean locked) {
+    private static ItemStack choice(ServerPlayerEntity viewer, ItemStack stack, Text name, List<String> members,
+                                    boolean selected, boolean locked) {
         stack.set(DataComponentTypes.CUSTOM_NAME, plain(name.copy()));
         List<Text> lore = new ArrayList<>();
-        for (String member : members) lore.add(plain(Text.literal(" • " + member).formatted(Formatting.WHITE)));
+        for (String member : members) {
+            // Offline members stay in their team (they keep it when they come back) but are
+            // greyed out: only online players take part in a race.
+            boolean online = viewer.server.getPlayerManager().getPlayer(member) != null;
+            lore.add(plain(online
+                    ? Text.literal(" • " + member).formatted(Formatting.WHITE)
+                    : Text.literal(" • " + member + " ").formatted(Formatting.DARK_GRAY)
+                            .append(Text.translatable("bingocraft.teams.offline"))));
+        }
         if (!members.isEmpty()) lore.add(Text.empty());
         lore.add(plain(Text.translatable(locked ? "bingocraft.teams.lore.locked"
                         : selected ? "bingocraft.teams.lore.selected" : "bingocraft.teams.lore.join")

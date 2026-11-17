@@ -44,12 +44,15 @@ import java.util.UUID;
  * countdown. At GO every racer is cleared, put in survival and dropped from the top of the world
  * at their team's random spot, with a minute of fall protection, regeneration and saturation;
  * spectators switch to spectator mode where they are. The first team to fill a row or a column
- * wins. 30 s later everybody is sent back to the world spawn and the teams are dissolved.
+ * wins. 30 s later (last 10 s counted down) everybody is sent back to the world spawn in creative
+ * mode and the teams are dissolved.
  * Teams are locked from /bingo start until then.
  */
 public final class RaceManager {
 
     private static final Random RANDOM = new Random();
+    /** The last seconds before the return to spawn are counted down in the action bar. */
+    private static final int RETURN_COUNTDOWN_TICKS = 200;
 
     private RaceManager() { }
 
@@ -71,7 +74,17 @@ public final class RaceManager {
 
         long now = server.getOverworld().getTime();
         if (race.isFinished()) {
-            if (now >= race.finishedAt() + Race.RETURN_DELAY_TICKS) reset(server, state);
+            long left = race.finishedAt() + Race.RETURN_DELAY_TICKS - now;
+            if (left <= 0) {
+                reset(server, state);
+            } else if (left <= RETURN_COUNTDOWN_TICKS && left % 20 == 0) {
+                Text message = Text.translatable("bingocraft.race.returning_in", left / 20).formatted(Formatting.YELLOW);
+                for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
+                    p.sendMessage(message, true); // action bar
+                    p.playSoundToPlayer(SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), SoundCategory.MASTER, 0.7f,
+                            left <= 60 ? 1.4f : 1.0f);
+                }
+            }
             return;
         }
         if (race.isCountingDown()) {
@@ -215,8 +228,8 @@ public final class RaceManager {
     }
 
     /**
-     * After a race: everybody online back to the world spawn (spectators back in survival), all
-     * bingo teams dissolved and spectator choices forgotten, so teams are picked again.
+     * After a race: everybody online back to the world spawn in creative mode, all bingo teams
+     * dissolved and spectator choices forgotten, so teams are picked again.
      */
     private static void reset(MinecraftServer server, BingoState state) {
         state.setRace(null);
@@ -226,7 +239,7 @@ public final class RaceManager {
         int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, spawn.getX(), spawn.getZ());
         for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
             if (p.currentScreenHandler instanceof CardScreenHandler) p.closeHandledScreen();
-            if (p.isSpectator()) p.changeGameMode(GameMode.SURVIVAL);
+            p.changeGameMode(GameMode.CREATIVE);
             p.teleport(world, spawn.getX() + 0.5, y, spawn.getZ() + 0.5, p.getYaw(), p.getPitch());
             p.fallDistance = 0.0f;
         }

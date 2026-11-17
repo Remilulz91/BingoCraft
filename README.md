@@ -20,7 +20,8 @@ Pick teams and race on the same 5x5 card. The first team to fill a **row or a co
    and dropped from the top of the world at their team's random spot (never over water), with
    1 minute of fall protection, regeneration and saturation. Spectators stay where they are and
    can teleport to players with the vanilla spectator menu.
-4. 30 seconds after the win, everybody is sent back to spawn and teams are dissolved.
+4. 30 seconds after the win (last 10 counted down), everybody is sent back to spawn in creative
+   mode and teams are dissolved.
 
 Teams are locked during a race. `/bingo stop` (OP) cancels it.
 
