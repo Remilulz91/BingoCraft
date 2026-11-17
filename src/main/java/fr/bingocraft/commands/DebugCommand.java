@@ -68,7 +68,8 @@ public class DebugCommand {
     private static int onNew(CommandContext<ServerCommandSource> ctx, int size) {
         ServerPlayerEntity player = ctx.getSource().getPlayer();
         if (player == null) return playersOnly(ctx);
-        BingoCard card = CardGenerator.generate(size, ctx.getSource().getServer(), new Random());
+        BingoCard card = CardGenerator.generate(size, ctx.getSource().getServer(), new Random(),
+                CardTracker.ownedItems(player));
         if (card == null) {
             ctx.getSource().sendError(Text.translatable("bingocraft.card.pool_too_small", size * size));
             return 0;

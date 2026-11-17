@@ -2,7 +2,7 @@
   "bingocraft.command.reloaded": "BingoCraft configuration reloaded.",
   "bingocraft.command.players_only": "Only a player can use this command.",
   "bingocraft.card.none": "You don't have a bingo card.",
-  "bingocraft.card.complete": "BINGO! %s completed their card!",
+  "bingocraft.card.complete": "BINGO! %s completed a card! (%s in total)",
   "bingocraft.goal.done": "✔ %s (%s/%s)",
   "bingocraft.debug.new": "New %sx%s card dealt. /bingo card to see it.",
   "bingocraft.debug.cleared": "Card removed.",
@@ -19,5 +19,11 @@
   "bingocraft.screen.goal.missing_mod": "Item from a mod that is no longer installed",
   "bingocraft.screen.progress": "Progress: %s/%s",
   "bingocraft.screen.progress.hint": "Get an item in your inventory to tick its square.",
-  "bingocraft.screen.progress.complete": "Card complete!"
+  "bingocraft.screen.progress.complete": "Card complete!",
+  "bingocraft.endless.new_card": "A new bingo card has been dealt!",
+  "bingocraft.endless.open": "[Open]",
+  "bingocraft.endless.reward": "Reward: %s",
+  "bingocraft.screen.completed_cards": "Cards completed: %s",
+  "config.bingocraft.endlessMode": "Endless mode",
+  "config.bingocraft.endlessMode.tooltip": "Every player always has a card. Completing it gives a reward and deals a new card, forever."
 }

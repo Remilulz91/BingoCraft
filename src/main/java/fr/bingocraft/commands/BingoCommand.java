@@ -3,7 +3,6 @@ package fr.bingocraft.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import fr.bingocraft.BingoCraft;
-import fr.bingocraft.bingo.BingoCard;
 import fr.bingocraft.bingo.BingoState;
 import fr.bingocraft.config.BingoCraftConfig;
 import fr.bingocraft.screen.CardScreenHandler;
@@ -46,12 +45,10 @@ public class BingoCommand {
             ctx.getSource().sendError(Text.translatable("bingocraft.command.players_only"));
             return 0;
         }
-        BingoCard card = BingoState.get(ctx.getSource().getServer()).get(player.getUuid());
-        if (card == null) {
+        if (!CardScreenHandler.open(player, BingoState.get(ctx.getSource().getServer()))) {
             ctx.getSource().sendError(Text.translatable("bingocraft.card.none"));
             return 0;
         }
-        CardScreenHandler.open(player, card);
         return 1;
     }
 

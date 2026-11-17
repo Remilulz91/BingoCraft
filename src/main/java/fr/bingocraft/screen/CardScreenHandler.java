@@ -1,6 +1,7 @@
 package fr.bingocraft.screen;
 
 import fr.bingocraft.bingo.BingoCard;
+import fr.bingocraft.bingo.BingoState;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,18 +43,26 @@ public class CardScreenHandler extends GenericContainerScreenHandler {
         this.display = display;
     }
 
-    public static void open(ServerPlayerEntity player, BingoCard card) {
+    /** Opens the player's current card. Returns false if they have none. */
+    public static boolean open(ServerPlayerEntity player, BingoState state) {
+        BingoCard card = state.get(player.getUuid());
+        if (card == null) return false;
         SimpleInventory display = new SimpleInventory(ROWS * COLUMNS);
-        fill(display, card);
+        fill(display, card, state.completedCards(player.getUuid()));
         player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                 (syncId, playerInventory, p) -> new CardScreenHandler(syncId, playerInventory, display),
                 Text.translatable("bingocraft.screen.title")));
+        return true;
     }
 
-    /** Redraws the card if the player is looking at it (called when a goal is ticked). */
-    public static void refresh(ServerPlayerEntity player, BingoCard card) {
-        if (player.currentScreenHandler instanceof CardScreenHandler handler) {
-            fill(handler.display, card);
+    /**
+     * Redraws the card if the player is looking at it: called when a goal is ticked and when a
+     * new card replaces a completed one.
+     */
+    public static void refresh(ServerPlayerEntity player, BingoState state) {
+        BingoCard card = state.get(player.getUuid());
+        if (card != null && player.currentScreenHandler instanceof CardScreenHandler handler) {
+            fill(handler.display, card, state.completedCards(player.getUuid()));
             handler.sendContentUpdates();
         }
     }
@@ -78,7 +87,7 @@ public class CardScreenHandler extends GenericContainerScreenHandler {
 
     // === Drawing ===
 
-    private static void fill(SimpleInventory display, BingoCard card) {
+    private static void fill(SimpleInventory display, BingoCard card, int completedCards) {
         ItemStack background = new ItemStack(Items.BLACK_STAINED_GLASS_PANE);
         background.set(DataComponentTypes.HIDE_TOOLTIP, Unit.INSTANCE);
         for (int slot = 0; slot < display.size(); slot++) display.setStack(slot, background.copy());
@@ -92,7 +101,7 @@ public class CardScreenHandler extends GenericContainerScreenHandler {
                 display.setStack((row + rowOffset) * COLUMNS + col + colOffset, goalStack(card, index));
             }
         }
-        display.setStack(PROGRESS_SLOT, progressStack(card));
+        display.setStack(PROGRESS_SLOT, progressStack(card, completedCards));
     }
 
     private static ItemStack goalStack(BingoCard card, int index) {
@@ -113,14 +122,16 @@ public class CardScreenHandler extends GenericContainerScreenHandler {
         return stack;
     }
 
-    private static ItemStack progressStack(BingoCard card) {
+    private static ItemStack progressStack(BingoCard card, int completedCards) {
         boolean complete = card.isComplete();
         ItemStack stack = new ItemStack(complete ? Items.NETHER_STAR : Items.WRITABLE_BOOK);
         stack.set(DataComponentTypes.CUSTOM_NAME, plain(Text.translatable("bingocraft.screen.progress",
                 card.completedCount(), card.cellCount()).formatted(Formatting.GOLD)));
-        stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(plain(Text.translatable(
-                complete ? "bingocraft.screen.progress.complete" : "bingocraft.screen.progress.hint")
-                .formatted(Formatting.GRAY)))));
+        stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(
+                plain(Text.translatable(complete ? "bingocraft.screen.progress.complete" : "bingocraft.screen.progress.hint")
+                        .formatted(Formatting.GRAY)),
+                plain(Text.translatable("bingocraft.screen.completed_cards", completedCards)
+                        .formatted(Formatting.YELLOW)))));
         return stack;
     }
 

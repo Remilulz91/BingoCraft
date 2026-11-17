@@ -12,11 +12,13 @@ import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
- * Every player's card, saved with the world (data/bingocraft_cards.dat in the overworld folder).
+ * Every player's card and number of completed cards, saved with the world (data/bingocraft_cards.dat in the overworld folder).
  * All changes go through this class so the save is always marked dirty.
  */
 public class BingoState extends PersistentState {
@@ -24,6 +26,7 @@ public class BingoState extends PersistentState {
     private static final String STATE_KEY = "bingocraft_cards";
 
     private final Map<UUID, BingoCard> cards = new HashMap<>();
+    private final Map<UUID, Integer> completedCards = new HashMap<>();
 
     public BingoCard get(UUID player) {
         return cards.get(player);
@@ -40,12 +43,27 @@ public class BingoState extends PersistentState {
         return removed;
     }
 
-    /** Marks a cell of a player's card as done. Returns false if it already was. */
-    public boolean markDone(UUID player, int index) {
-        BingoCard card = cards.get(player);
-        if (card == null || !card.markDone(index)) return false;
+    /**
+     * Marks a cell of a player's card as done. Returns false if it already was, or if
+     * {@code card} is no longer that player's current card.
+     */
+    public boolean markDone(UUID player, BingoCard card, int index) {
+        if (cards.get(player) != card || !card.markDone(index)) return false;
         markDirty();
         return true;
+    }
+
+    /** How many cards this player has completed in this world. */
+    public int completedCards(UUID player) {
+        return completedCards.getOrDefault(player, 0);
+    }
+
+    /** Counts one more completed card; returns the new total. */
+    public int addCompletedCard(UUID player) {
+        int total = completedCards(player) + 1;
+        completedCards.put(player, total);
+        markDirty();
+        return total;
     }
 
     // === Persistence ===
@@ -53,10 +71,14 @@ public class BingoState extends PersistentState {
     @Override
     public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         NbtList list = new NbtList();
-        for (Map.Entry<UUID, BingoCard> entry : cards.entrySet()) {
+        Set<UUID> players = new HashSet<>(cards.keySet());
+        players.addAll(completedCards.keySet());
+        for (UUID player : players) {
             NbtCompound tag = new NbtCompound();
-            tag.putUuid("player", entry.getKey());
-            tag.put("card", entry.getValue().toNbt());
+            tag.putUuid("player", player);
+            BingoCard card = cards.get(player);
+            if (card != null) tag.put("card", card.toNbt());
+            tag.putInt("completed", completedCards(player));
             list.add(tag);
         }
         nbt.put("cards", list);
@@ -69,8 +91,12 @@ public class BingoState extends PersistentState {
         for (int i = 0; i < list.size(); i++) {
             NbtCompound tag = list.getCompound(i);
             if (!tag.containsUuid("player")) continue;
-            BingoCard card = BingoCard.fromNbt(tag.getCompound("card"));
-            if (card != null) state.cards.put(tag.getUuid("player"), card);
+            UUID player = tag.getUuid("player");
+            if (tag.contains("card")) {
+                BingoCard card = BingoCard.fromNbt(tag.getCompound("card"));
+                if (card != null) state.cards.put(player, card);
+            }
+            if (tag.getInt("completed") > 0) state.completedCards.put(player, tag.getInt("completed"));
         }
         return state;
     }

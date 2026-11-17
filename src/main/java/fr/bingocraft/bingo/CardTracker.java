@@ -1,6 +1,7 @@
 package fr.bingocraft.bingo;
 
 import fr.bingocraft.config.BingoCraftConfig;
+import fr.bingocraft.endless.EndlessMode;
 import fr.bingocraft.screen.CardScreenHandler;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerInventory;
@@ -40,19 +41,25 @@ public final class CardTracker {
         BingoState state = BingoState.get(server);
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             BingoCard card = state.get(player.getUuid());
-            if (card == null || card.isComplete()) continue;
+            if (card == null) {
+                if (BingoCraftConfig.get().endlessMode) EndlessMode.deal(player, state);
+                continue;
+            }
+            if (card.isComplete()) continue;
 
             Set<Item> owned = ownedItems(player);
             for (int i = 0; i < card.cellCount(); i++) {
                 Item item = card.item(i);
                 if (!card.isDone(i) && item != null && owned.contains(item)) {
                     complete(player, state, card, i);
+                    if (card.isComplete()) break; // in endless mode a new card has just replaced it
                 }
             }
         }
     }
 
-    private static Set<Item> ownedItems(ServerPlayerEntity player) {
+    /** Every item the player is carrying: inventory, armor, off-hand and cursor. */
+    public static Set<Item> ownedItems(ServerPlayerEntity player) {
         Set<Item> owned = new HashSet<>();
         PlayerInventory inventory = player.getInventory();
         for (int slot = 0; slot < inventory.size(); slot++) {
@@ -69,7 +76,7 @@ public final class CardTracker {
      * cell behaves exactly like a real one.
      */
     public static void complete(ServerPlayerEntity player, BingoState state, BingoCard card, int index) {
-        if (!state.markDone(player.getUuid(), index)) return;
+        if (!state.markDone(player.getUuid(), card, index)) return;
 
         int done = card.completedCount();
         int total = card.cellCount();
@@ -78,15 +85,17 @@ public final class CardTracker {
                         done, total)
                 .formatted(Formatting.GREEN), false);
 
-        CardScreenHandler.refresh(player, card);
-
         if (card.isComplete()) {
+            int cardsCompleted = state.addCompletedCard(player.getUuid());
             player.server.getPlayerManager().broadcast(
-                    Text.translatable("bingocraft.card.complete", player.getDisplayName())
+                    Text.translatable("bingocraft.card.complete", player.getDisplayName(), cardsCompleted)
                             .formatted(Formatting.GOLD, Formatting.BOLD), false);
             player.getWorld().playSound(null, player.getBlockPos(),
                     SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            if (BingoCraftConfig.get().endlessMode) EndlessMode.onCardComplete(player, state);
+            CardScreenHandler.refresh(player, state);
         } else {
+            CardScreenHandler.refresh(player, state);
             player.getWorld().playSound(null, player.getBlockPos(),
                     SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.6f, 1.2f);
         }

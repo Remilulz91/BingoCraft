@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Deals a new card: size² distinct items drawn uniformly from {@link GoalFilter#candidates}.
+ * Items in {@code exclude} (what the player is carrying when the card is dealt) are left out,
+ * so a fresh card never starts with squares already ticked.
  */
 public final class CardGenerator {
 
@@ -21,9 +24,10 @@ public final class CardGenerator {
     private CardGenerator() { }
 
     /** Returns a new card, or null if fewer than size² items are eligible. */
-    public static BingoCard generate(int size, MinecraftServer server, Random random) {
+    public static BingoCard generate(int size, MinecraftServer server, Random random, Set<Item> exclude) {
         int total = size * size;
         List<Item> pool = new ArrayList<>(GoalFilter.candidates(server));
+        pool.removeAll(exclude);
         if (pool.size() < total) return null;
         Collections.shuffle(pool, random);
 

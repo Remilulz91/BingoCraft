@@ -2,7 +2,7 @@
   "bingocraft.command.reloaded": "Configuration de BingoCraft rechargée.",
   "bingocraft.command.players_only": "Seul un joueur peut utiliser cette commande.",
   "bingocraft.card.none": "Tu n'as pas de grille de bingo.",
-  "bingocraft.card.complete": "BINGO ! %s a complété sa grille !",
+  "bingocraft.card.complete": "BINGO ! %s a complété une grille ! (%s au total)",
   "bingocraft.goal.done": "✔ %s (%s/%s)",
   "bingocraft.debug.new": "Nouvelle grille %sx%s distribuée. /bingo card pour la voir.",
   "bingocraft.debug.cleared": "Grille supprimée.",
@@ -19,5 +19,11 @@
   "bingocraft.screen.goal.missing_mod": "Objet d'un mod qui n'est plus installé",
   "bingocraft.screen.progress": "Progression : %s/%s",
   "bingocraft.screen.progress.hint": "Aie un objet dans ton inventaire pour cocher sa case.",
-  "bingocraft.screen.progress.complete": "Grille complète !"
+  "bingocraft.screen.progress.complete": "Grille complète !",
+  "bingocraft.endless.new_card": "Une nouvelle grille de bingo t'a été distribuée !",
+  "bingocraft.endless.open": "[Ouvrir]",
+  "bingocraft.endless.reward": "Récompense : %s",
+  "bingocraft.screen.completed_cards": "Grilles complétées : %s",
+  "config.bingocraft.endlessMode": "Mode infini",
+  "config.bingocraft.endlessMode.tooltip": "Chaque joueur a toujours une grille. La compléter donne une récompense et distribue une nouvelle grille, à l'infini."
 }

@@ -28,6 +28,14 @@ public class BingoCraftConfig {
 
     private static BingoCraftConfig INSTANCE = new BingoCraftConfig();
 
+    // === Game mode ===
+
+    /**
+     * Endless survival bingo: every player always has a card; completing it gives a reward
+     * (loot table bingocraft:rewards/card_complete) and deals a new one, forever.
+     */
+    public boolean endlessMode = true;
+
     // === Cards ===
 
     /** Side of a new card: 3 (3x3), 4 (4x4) or 5 (5x5). */

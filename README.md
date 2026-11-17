@@ -4,18 +4,22 @@
 
 Item bingo for Minecraft (Fabric 1.21.1).
 
-> 🚧 Early development — the game modes below are planned, not playable yet.
+> 🚧 Early development — endless mode is playable, race mode is coming.
 
 ## Game modes
 
-### Race
+### Race (planned)
 Create a world, start a bingo and race your friends — solo or in teams — on a shared card.
 The first player or team to complete the card (a line or the whole card, your choice) wins.
 
-### Endless
+### Endless (available)
 Install it on any server, modded or not, and play your survival as usual. Every player has
-their own card in the background. Complete it to earn a reward, and a fresh card is dealt.
-Forever.
+their own card in the background (`/bingo card` to look at it). Complete it to earn a random
+reward, and a fresh card is dealt. Forever.
+
+Rewards come from the loot table `data/bingocraft/loot_table/rewards/card_complete.json`:
+override it with a datapack to change them. Turn the mode off with `endlessMode: false` in
+`config/bingocraft.json`.
 
 ## Requirements
 

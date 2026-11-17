@@ -25,6 +25,10 @@ public final class BingoCraftConfigScreen {
 
         // === Cards category ===
         ConfigCategory cards = builder.getOrCreateCategory(Text.translatable("config.bingocraft.category.cards"));
+        cards.addEntry(entry.startBooleanToggle(Text.translatable("config.bingocraft.endlessMode"), cfg.endlessMode)
+                .setDefaultValue(true)
+                .setTooltip(Text.translatable("config.bingocraft.endlessMode.tooltip"))
+                .setSaveConsumer(v -> cfg.endlessMode = v).build());
         cards.addEntry(entry.startIntSlider(Text.translatable("config.bingocraft.cardSize"), cfg.cardSize, 3, 5)
                 .setDefaultValue(5)
                 .setTooltip(Text.translatable("config.bingocraft.cardSize.tooltip"))

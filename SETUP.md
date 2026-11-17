@@ -49,6 +49,7 @@ src/main/
 │   ├── BingoCraft.java                 (main entry, build detection)
 │   ├── config/BingoCraftConfig.java    (config/bingocraft.json)
 │   ├── bingo/                          (BingoCard, GoalFilter, CardGenerator, BingoState, CardTracker)
+│   ├── endless/                        (EndlessMode — deal / reward / next card, Rewards — loot table roll)
 │   ├── screen/                         (CardScreenHandler — double chest card view, server-side)
 │   ├── commands/                       (BingoCommand, DebugCommand)
 │   └── client/                         (BingoCraftClient, config/ModMenuIntegration + BingoCraftConfigScreen)
@@ -56,7 +57,9 @@ src/main/
     ├── fabric.mod.json
     ├── bingocraft.build.properties
     ├── assets/bingocraft/              (icon.png, lang/)
-    └── data/bingocraft/tags/item/       (excluded.json — items that never appear on a card)
+    └── data/bingocraft/
+        ├── tags/item/                  (excluded.json — items that never appear on a card)
+        └── loot_table/rewards/         (card_complete.json — endless mode reward)
 ```
 
 ## Releasing a new version
@@ -75,4 +78,4 @@ src/main/
 | `/bingo debug pool` | How many items a card can draw from |
 | `/bingo debug new [size]` | Deal yourself a new card (3-5, default from config) |
 | `/bingo debug complete <cell>` | Mark cell n as done (1 = top left, row by row) |
-| `/bingo debug clear` | Remove your card |
+| `/bingo debug clear` | Remove your card (in endless mode a new one is dealt on the next check) |

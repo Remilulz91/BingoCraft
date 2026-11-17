@@ -2,6 +2,23 @@
 
 All notable changes to BingoCraft will be documented in this file.
 
+## [0.3.0-alpha.1] — 2026-11-17
+
+### Added
+- **Endless mode** (on by default, `endlessMode` in the config): every player always has a card.
+  Players without one are dealt a card automatically (first join included).
+- Completing a card gives a **random reward** from the loot table
+  `bingocraft:rewards/card_complete` (2-3 rolls: ores, diamonds, emeralds, XP bottles, enchanted
+  books and gear, golden apples… and rarely a totem or an enchanted golden apple), then deals a
+  **new card** right away, forever. Overridable by datapack.
+- A new card never contains an item the player is carrying when it is dealt (reward items
+  included), so it never starts with squares already ticked.
+- Completed cards are counted per player, announced to the server and shown in the card view.
+- Chat message with a clickable **[Open]** link when a card is dealt.
+
+### Fixed
+- A goal could be ticked on the wrong card if a new card replaced the old one during a check.
+
 ## [0.2.0-alpha.1] — 2026-11-16
 
 ### Added
