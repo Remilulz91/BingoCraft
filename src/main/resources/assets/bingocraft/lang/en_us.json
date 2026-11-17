@@ -87,5 +87,6 @@
   "bingocraft.mode.race_in_progress": "A race is in progress: /bingo stop first.",
   "bingocraft.mode.none_active": "No bingo mode is active. An admin picks one with /bingo mode.",
   "bingocraft.race.returning_in": "Back to spawn in %s s…",
-  "bingocraft.teams.offline": "(offline)"
+  "bingocraft.teams.offline": "(offline)",
+  "tag.item.bingocraft.excluded": "Excluded from bingo cards"
 }

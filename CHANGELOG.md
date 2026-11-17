@@ -2,6 +2,12 @@
 
 All notable changes to BingoCraft will be documented in this file.
 
+## [0.5.1-alpha.1] — 2026-11-17
+
+### Fixed
+- The item tag `#bingocraft:excluded` now has a translated name (`tag.item.bingocraft.excluded`),
+  so recipe viewers (EMI, REI, JEI) can display it and Fabric no longer logs a dev warning.
+
 ## [0.5.0-alpha.1] — 2026-11-17
 
 ### Added
