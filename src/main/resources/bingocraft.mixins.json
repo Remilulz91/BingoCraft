@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "fr.bingocraft.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "bingocraft-refmap.json",
+  "mixins": [
+    "FireworkRocketEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

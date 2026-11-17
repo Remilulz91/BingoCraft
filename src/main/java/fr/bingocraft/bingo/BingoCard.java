@@ -66,8 +66,11 @@ public final class BingoCard {
         return done[index];
     }
 
-    /** Marks a cell as done. Returns false if it already was. */
-    boolean markDone(int index) {
+    /**
+     * Marks a cell as done. Returns false if it already was. Callers save the change through
+     * {@link BingoState} so the world data is marked dirty.
+     */
+    public boolean markDone(int index) {
         if (done[index]) return false;
         done[index] = true;
         return true;
@@ -81,6 +84,25 @@ public final class BingoCard {
 
     public boolean isComplete() {
         return completedCount() == done.length;
+    }
+
+    /** True if a whole row or a whole column is done (diagonals don't count). */
+    public boolean hasRowOrColumn() {
+        for (int i = 0; i < size; i++) {
+            boolean row = true;
+            boolean col = true;
+            for (int j = 0; j < size; j++) {
+                row &= done[i * size + j];
+                col &= done[j * size + i];
+            }
+            if (row || col) return true;
+        }
+        return false;
+    }
+
+    /** Same goals, nothing done: every team of a race plays its own copy of one card. */
+    public BingoCard blankCopy() {
+        return new BingoCard(size, List.of(goals));
     }
 
     // === NBT ===

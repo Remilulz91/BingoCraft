@@ -2,6 +2,7 @@ package fr.bingocraft;
 
 import fr.bingocraft.bingo.CardTracker;
 import fr.bingocraft.commands.BingoCommand;
+import fr.bingocraft.race.RaceManager;
 import fr.bingocraft.config.BingoCraftConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -63,6 +64,7 @@ public class BingoCraft implements ModInitializer {
 
         // 2. Card tracking: inventories are checked against the cards every few ticks
         CardTracker.register();
+        RaceManager.register(); // race countdown
 
         // 3. Register commands (/bingo version, /bingo reload, /bingo debug ...)
         CommandRegistrationCallback.EVENT.register(BingoCommand::register);

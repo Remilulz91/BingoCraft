@@ -2,6 +2,39 @@
 
 All notable changes to BingoCraft will be documented in this file.
 
+## [0.4.0-alpha.1] — 2026-11-17
+
+### Added
+- **Game mode per world**, picked by an OP with `/bingo mode` (menu) or
+  `/bingo mode endless|race|off`. A new world starts **off**: no card is dealt and nothing is
+  tracked until a mode is chosen. Saved with the world.
+- **Race mode**:
+  - `/bingo team`: a chest with one wool per team (8 colours) and an ender eye to spectate.
+    The choice glows and member lists update live. Spectators join no team.
+  - `/bingo start` (OP) refuses while an online player has neither picked a team nor chosen to
+    spectate, and names them. Teams are locked from then until the end of the race.
+  - Same 5x5 card for every team; the **first full row or column wins** (diagonals don't count).
+  - 10-second countdown with titles, then GO: every racer is cleared, put in survival and
+    dropped from the top of the world at their team's random spot (team mates a few blocks
+    apart; within `raceSpawnRadius` of the world spawn; never over an ocean, river, beach or
+    lake), with `raceProtectionSeconds` (60) of fall protection, regeneration and saturation.
+  - Spectators switch to spectator mode where they are and can teleport to any player with the
+    vanilla spectator menu.
+  - A team learns which item it ticked; the other teams only that it scored.
+  - Win: title, race time and harmless fireworks on the winning team. 30 seconds later everybody
+    is sent back to the world spawn (spectators back in survival) and the teams are dissolved.
+  - `/bingo stop` (OP) cancels the race and sends everybody back to spawn right away.
+  - The card view shows the goal, your team and the race clock, updated every second.
+  - Racers offline at GO are dropped in when they come back; the race survives a restart.
+- Endless mode: **BINGO!** title and harmless fireworks when a card is completed.
+
+### Changed
+- Every card is 5x5 in both modes (`cardSize` removed). `/bingo debug new [size]` keeps smaller
+  cards for quick tests.
+- `endlessMode` removed from the config: the mode is now chosen in game with `/bingo mode`.
+- Player commands: `/bingo card`, `/bingo team`, `/bingo version`. OP only: `/bingo mode`,
+  `start`, `stop`, `reload`, `debug`.
+
 ## [0.3.0-alpha.1] — 2026-11-17
 
 ### Added

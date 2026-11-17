@@ -4,22 +4,33 @@
 
 Item bingo for Minecraft (Fabric 1.21.1).
 
-> 🚧 Early development — endless mode is playable, race mode is coming.
+> 🚧 Early development (alpha).
 
 ## Game modes
 
-### Race (planned)
-Create a world, start a bingo and race your friends — solo or in teams — on a shared card.
-The first player or team to complete the card (a line or the whole card, your choice) wins.
+A new world starts with bingo **off**. An OP picks the mode with `/bingo mode` (a menu) or
+`/bingo mode endless|race|off`.
 
-### Endless (available)
+### Race
+Pick teams and race on the same 5x5 card. The first team to fill a **row or a column** wins.
+
+1. `/bingo mode race` (OP).
+2. Everyone runs `/bingo team` and clicks a wool (8 teams) or the ender eye to spectate.
+3. An OP runs `/bingo start`: 10-second countdown, then every racer is cleared, put in survival
+   and dropped from the top of the world at their team's random spot (never over water), with
+   1 minute of fall protection, regeneration and saturation. Spectators stay where they are and
+   can teleport to players with the vanilla spectator menu.
+4. 30 seconds after the win, everybody is sent back to spawn and teams are dissolved.
+
+Teams are locked during a race. `/bingo stop` (OP) cancels it.
+
+### Endless
 Install it on any server, modded or not, and play your survival as usual. Every player has
 their own card in the background (`/bingo card` to look at it). Complete it to earn a random
 reward, and a fresh card is dealt. Forever.
 
 Rewards come from the loot table `data/bingocraft/loot_table/rewards/card_complete.json`:
-override it with a datapack to change them. Turn the mode off with `endlessMode: false` in
-`config/bingocraft.json`.
+override it with a datapack to change them. Turn it off with `/bingo mode off`.
 
 ## Requirements
 
@@ -36,11 +47,15 @@ Grab the jar from the [Releases](https://github.com/Remilulz91/BingoCraft/releas
 
 ## Commands
 
-| Command | Description |
-|---|---|
-| `/bingo card` | Open your card |
-| `/bingo version` | Mod version and build type |
-| `/bingo reload` | Reload `config/bingocraft.json` (OP) |
+| Command | Who | Description |
+|---|---|---|
+| `/bingo card` | everyone | Open your card (your team's card during a race) |
+| `/bingo team` | everyone | Pick a race team or spectate (race mode) |
+| `/bingo version` | everyone | Mod version and build type |
+| `/bingo mode [endless\|race\|off]` | OP | Pick the game mode (menu without argument) |
+| `/bingo start` | OP | Start a race |
+| `/bingo stop` | OP | Cancel the race |
+| `/bingo reload` | OP | Reload `config/bingocraft.json` |
 
 ## Excluding items (datapacks & modpacks)
 

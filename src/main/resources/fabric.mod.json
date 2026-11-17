@@ -26,6 +26,9 @@
       "fr.bingocraft.client.config.ModMenuIntegration"
     ]
   },
+  "mixins": [
+    "bingocraft.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",

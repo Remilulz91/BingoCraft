@@ -25,14 +25,14 @@ public final class BingoCraftConfigScreen {
 
         // === Cards category ===
         ConfigCategory cards = builder.getOrCreateCategory(Text.translatable("config.bingocraft.category.cards"));
-        cards.addEntry(entry.startBooleanToggle(Text.translatable("config.bingocraft.endlessMode"), cfg.endlessMode)
-                .setDefaultValue(true)
-                .setTooltip(Text.translatable("config.bingocraft.endlessMode.tooltip"))
-                .setSaveConsumer(v -> cfg.endlessMode = v).build());
-        cards.addEntry(entry.startIntSlider(Text.translatable("config.bingocraft.cardSize"), cfg.cardSize, 3, 5)
-                .setDefaultValue(5)
-                .setTooltip(Text.translatable("config.bingocraft.cardSize.tooltip"))
-                .setSaveConsumer(v -> cfg.cardSize = v).build());
+        cards.addEntry(entry.startIntField(Text.translatable("config.bingocraft.raceSpawnRadius"), cfg.raceSpawnRadius)
+                .setMin(16).setMax(30000).setDefaultValue(3000)
+                .setTooltip(Text.translatable("config.bingocraft.raceSpawnRadius.tooltip"))
+                .setSaveConsumer(v -> cfg.raceSpawnRadius = v).build());
+        cards.addEntry(entry.startIntField(Text.translatable("config.bingocraft.raceProtectionSeconds"), cfg.raceProtectionSeconds)
+                .setMin(0).setMax(600).setDefaultValue(60)
+                .setTooltip(Text.translatable("config.bingocraft.raceProtectionSeconds.tooltip"))
+                .setSaveConsumer(v -> cfg.raceProtectionSeconds = v).build());
         cards.addEntry(entry.startIntField(Text.translatable("config.bingocraft.checkIntervalTicks"), cfg.checkIntervalTicks)
                 .setMin(1).setMax(200).setDefaultValue(10)
                 .setTooltip(Text.translatable("config.bingocraft.checkIntervalTicks.tooltip"))

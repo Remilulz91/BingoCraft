@@ -2,7 +2,9 @@ package fr.bingocraft.bingo;
 
 import fr.bingocraft.config.BingoCraftConfig;
 import fr.bingocraft.endless.EndlessMode;
+import fr.bingocraft.race.RaceManager;
 import fr.bingocraft.screen.CardScreenHandler;
+import fr.bingocraft.util.Feedback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -39,10 +41,18 @@ public final class CardTracker {
 
     private static void checkAll(MinecraftServer server) {
         BingoState state = BingoState.get(server);
+        switch (state.mode()) {
+            case NONE -> { return; } // no mode picked: nothing is tracked
+            case RACE -> {
+                if (state.race() != null && state.race().isRunning()) RaceManager.check(server, state);
+                return;
+            }
+            case ENDLESS -> { } // personal cards, below
+        }
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             BingoCard card = state.get(player.getUuid());
             if (card == null) {
-                if (BingoCraftConfig.get().endlessMode) EndlessMode.deal(player, state);
+                EndlessMode.deal(player, state);
                 continue;
             }
             if (card.isComplete()) continue;
@@ -90,9 +100,12 @@ public final class CardTracker {
             player.server.getPlayerManager().broadcast(
                     Text.translatable("bingocraft.card.complete", player.getDisplayName(), cardsCompleted)
                             .formatted(Formatting.GOLD, Formatting.BOLD), false);
-            player.getWorld().playSound(null, player.getBlockPos(),
-                    SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.PLAYERS, 1.0f, 1.0f);
-            if (BingoCraftConfig.get().endlessMode) EndlessMode.onCardComplete(player, state);
+            player.playSoundToPlayer(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundCategory.MASTER, 1.0f, 1.0f);
+            Feedback.title(player, Text.translatable("bingocraft.card.bingo").formatted(Formatting.GOLD, Formatting.BOLD),
+                    Text.translatable("bingocraft.card.bingo.subtitle", cardsCompleted).formatted(Formatting.YELLOW),
+                    10, 100, 30);
+            Feedback.fireworks(player, 0xFFD700, 0xFF5555, 0x55FFFF);
+            if (state.mode() == BingoMode.ENDLESS) EndlessMode.onCardComplete(player, state);
             CardScreenHandler.refresh(player, state);
         } else {
             CardScreenHandler.refresh(player, state);

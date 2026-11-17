@@ -18,6 +18,10 @@ import java.util.Set;
  */
 public final class CardGenerator {
 
+    /** Every card of both modes is 5x5. */
+    public static final int SIZE = 5;
+
+    /** Smaller cards only exist through /bingo debug new, for quick tests. */
     public static final int MIN_SIZE = 3;
     public static final int MAX_SIZE = 5;
 

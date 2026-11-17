@@ -1,5 +1,6 @@
 package fr.bingocraft.bingo;
 
+import fr.bingocraft.race.Race;
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Every player's card and number of completed cards, saved with the world (data/bingocraft_cards.dat in the overworld folder).
+ * Every player's card and number of completed cards, and the race in progress, saved with the world (data/bingocraft_cards.dat in the overworld folder).
  * All changes go through this class so the save is always marked dirty.
  */
 public class BingoState extends PersistentState {
@@ -27,6 +28,52 @@ public class BingoState extends PersistentState {
 
     private final Map<UUID, BingoCard> cards = new HashMap<>();
     private final Map<UUID, Integer> completedCards = new HashMap<>();
+
+    private BingoMode mode = BingoMode.NONE;
+
+    public BingoMode mode() {
+        return mode;
+    }
+
+    public void setMode(BingoMode mode) {
+        this.mode = mode;
+        markDirty();
+    }
+
+    /** Players who chose to watch races (spectator item of the team menu). */
+    private final Set<UUID> spectators = new HashSet<>();
+
+    public boolean isSpectator(UUID player) {
+        return spectators.contains(player);
+    }
+
+    public void setSpectator(UUID player, boolean spectator) {
+        if (spectator ? spectators.add(player) : spectators.remove(player)) markDirty();
+    }
+
+    public void clearSpectators() {
+        if (!spectators.isEmpty()) {
+            spectators.clear();
+            markDirty();
+        }
+    }
+
+    /** The race in progress, or null. While a race runs, personal (endless) cards are paused. */
+    private Race race;
+
+    public Race race() {
+        return race;
+    }
+
+    public void setRace(Race race) {
+        this.race = race;
+        markDirty();
+    }
+
+    /** To call after changing the race in place (a cell ticked, a team added). */
+    public void raceChanged() {
+        markDirty();
+    }
 
     public BingoCard get(UUID player) {
         return cards.get(player);
@@ -82,6 +129,15 @@ public class BingoState extends PersistentState {
             list.add(tag);
         }
         nbt.put("cards", list);
+        nbt.putString("mode", mode.id());
+        if (race != null) nbt.put("race", race.toNbt());
+        NbtList watchers = new NbtList();
+        for (UUID uuid : spectators) {
+            NbtCompound tag = new NbtCompound();
+            tag.putUuid("player", uuid);
+            watchers.add(tag);
+        }
+        nbt.put("spectators", watchers);
         return nbt;
     }
 
@@ -97,6 +153,12 @@ public class BingoState extends PersistentState {
                 if (card != null) state.cards.put(player, card);
             }
             if (tag.getInt("completed") > 0) state.completedCards.put(player, tag.getInt("completed"));
+        }
+        state.mode = BingoMode.byId(nbt.getString("mode"));
+        if (nbt.contains("race")) state.race = Race.fromNbt(nbt.getCompound("race"));
+        NbtList watchers = nbt.getList("spectators", NbtElement.COMPOUND_TYPE);
+        for (int i = 0; i < watchers.size(); i++) {
+            if (watchers.getCompound(i).containsUuid("player")) state.spectators.add(watchers.getCompound(i).getUuid("player"));
         }
         return state;
     }

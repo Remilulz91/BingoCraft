@@ -9,7 +9,7 @@ import fr.bingocraft.bingo.BingoState;
 import fr.bingocraft.bingo.CardGenerator;
 import fr.bingocraft.bingo.CardTracker;
 import fr.bingocraft.bingo.GoalFilter;
-import fr.bingocraft.config.BingoCraftConfig;
+import fr.bingocraft.race.RaceManager;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,8 +23,9 @@ import java.util.Random;
  *
  *   /bingo debug info              - print runtime debug info
  *   /bingo debug pool              - number of items a card can draw from
- *   /bingo debug new [size]        - deal yourself a new card (size 3-5, default from config)
+ *   /bingo debug new [size]        - deal yourself a new card (size 3-5 for quick tests, default 5)
  *   /bingo debug complete <cell>   - mark cell n (1 = top left, row by row) as done
+ *                                    (on your side's card during a race)
  *   /bingo debug clear             - remove your card
  */
 public class DebugCommand {
@@ -37,7 +38,7 @@ public class DebugCommand {
                 .then(CommandManager.literal("pool")
                         .executes(DebugCommand::onPool))
                 .then(CommandManager.literal("new")
-                        .executes(ctx -> onNew(ctx, BingoCraftConfig.get().cardSize))
+                        .executes(ctx -> onNew(ctx, CardGenerator.SIZE))
                         .then(CommandManager.argument("size",
                                         IntegerArgumentType.integer(CardGenerator.MIN_SIZE, CardGenerator.MAX_SIZE))
                                 .executes(ctx -> onNew(ctx, IntegerArgumentType.getInteger(ctx, "size")))))
@@ -84,9 +85,18 @@ public class DebugCommand {
         ServerPlayerEntity player = ctx.getSource().getPlayer();
         if (player == null) return playersOnly(ctx);
         BingoState state = BingoState.get(ctx.getSource().getServer());
-        BingoCard card = state.get(player.getUuid());
+        if (state.mode() == fr.bingocraft.bingo.BingoMode.NONE) {
+            ctx.getSource().sendError(Text.translatable("bingocraft.mode.none_active"));
+            return 0;
+        }
+        boolean racing = state.race() != null && state.race().isRunning();
+        if (state.mode() == fr.bingocraft.bingo.BingoMode.RACE && !racing) {
+            ctx.getSource().sendError(Text.translatable("bingocraft.race.not_started"));
+            return 0;
+        }
+        BingoCard card = racing ? RaceManager.cardOf(player, state) : state.get(player.getUuid());
         if (card == null) {
-            ctx.getSource().sendError(Text.translatable("bingocraft.card.none"));
+            ctx.getSource().sendError(Text.translatable(racing ? "bingocraft.race.not_racing" : "bingocraft.card.none"));
             return 0;
         }
         int cell = IntegerArgumentType.getInteger(ctx, "cell");
@@ -94,7 +104,11 @@ public class DebugCommand {
             ctx.getSource().sendError(Text.literal("Cell must be between 1 and " + card.cellCount()));
             return 0;
         }
-        CardTracker.complete(player, state, card, cell - 1);
+        if (racing) {
+            RaceManager.complete(ctx.getSource().getServer(), state, player, card, cell - 1);
+        } else {
+            CardTracker.complete(player, state, card, cell - 1);
+        }
         return 1;
     }
 

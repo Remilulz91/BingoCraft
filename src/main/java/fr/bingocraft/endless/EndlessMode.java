@@ -4,7 +4,6 @@ import fr.bingocraft.bingo.BingoCard;
 import fr.bingocraft.bingo.BingoState;
 import fr.bingocraft.bingo.CardGenerator;
 import fr.bingocraft.bingo.CardTracker;
-import fr.bingocraft.config.BingoCraftConfig;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
@@ -32,7 +31,7 @@ public final class EndlessMode {
      * Returns the card, or null if not enough items are eligible.
      */
     public static BingoCard deal(ServerPlayerEntity player, BingoState state) {
-        BingoCard card = CardGenerator.generate(BingoCraftConfig.get().cardSize, player.server, RANDOM,
+        BingoCard card = CardGenerator.generate(CardGenerator.SIZE, player.server, RANDOM,
                 CardTracker.ownedItems(player));
         if (card == null) return null;
         state.put(player.getUuid(), card);

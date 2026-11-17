@@ -28,18 +28,16 @@ public class BingoCraftConfig {
 
     private static BingoCraftConfig INSTANCE = new BingoCraftConfig();
 
-    // === Game mode ===
+    // The game mode itself (off / endless / race) is not a config option: it is saved with the
+    // world and picked in game with /bingo mode.
 
-    /**
-     * Endless survival bingo: every player always has a card; completing it gives a reward
-     * (loot table bingocraft:rewards/card_complete) and deals a new one, forever.
-     */
-    public boolean endlessMode = true;
+    /** Race: teams land at random within this many blocks of the world spawn. */
+    public int raceSpawnRadius = 3000;
+
+    /** Race: seconds of fall protection, regeneration and saturation after the drop. */
+    public int raceProtectionSeconds = 60;
 
     // === Cards ===
-
-    /** Side of a new card: 3 (3x3), 4 (4x4) or 5 (5x5). */
-    public int cardSize = 5;
 
     /** Ticks between two inventory checks (20 ticks = 1 second). */
     public int checkIntervalTicks = 10;
@@ -58,7 +56,6 @@ public class BingoCraftConfig {
                 if (loaded != null) {
                     INSTANCE = loaded;
                 }
-                INSTANCE.cardSize = Math.max(3, Math.min(5, INSTANCE.cardSize));
                 save(); // rewrite so options added in newer versions appear in the file
                 BingoCraft.LOGGER.info("[Config] Configuration loaded from {}", CONFIG_PATH);
             } else {

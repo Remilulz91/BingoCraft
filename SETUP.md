@@ -48,14 +48,19 @@ src/main/
 ├── java/fr/bingocraft/
 │   ├── BingoCraft.java                 (main entry, build detection)
 │   ├── config/BingoCraftConfig.java    (config/bingocraft.json)
-│   ├── bingo/                          (BingoCard, GoalFilter, CardGenerator, BingoState, CardTracker)
+│   ├── bingo/                          (BingoMode, Modes, BingoCard, GoalFilter, CardGenerator, BingoState, CardTracker)
 │   ├── endless/                        (EndlessMode — deal / reward / next card, Rewards — loot table roll)
-│   ├── screen/                         (CardScreenHandler — double chest card view, server-side)
+│   ├── race/                           (Race, RaceManager — start / countdown / drop / tracking / win / return to spawn, SpawnFinder)
+│   ├── team/                           (BingoTeam — the 8 teams, Teams — join / spectate)
+│   ├── screen/                         (CardScreenHandler — 9x6 card view, TeamScreenHandler — team picker, ModeScreenHandler — mode picker; all server-side)
+│   ├── util/                           (Feedback — titles, harmless fireworks)
+│   ├── mixin/                          (FireworkRocketEntityMixin — tagged rockets deal no damage)
 │   ├── commands/                       (BingoCommand, DebugCommand)
 │   └── client/                         (BingoCraftClient, config/ModMenuIntegration + BingoCraftConfigScreen)
 └── resources/
     ├── fabric.mod.json
     ├── bingocraft.build.properties
+    ├── bingocraft.mixins.json
     ├── assets/bingocraft/              (icon.png, lang/)
     └── data/bingocraft/
         ├── tags/item/                  (excluded.json — items that never appear on a card)
