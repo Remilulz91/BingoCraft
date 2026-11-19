@@ -5,6 +5,7 @@ import fr.bingocraft.bingo.BingoMode;
 import fr.bingocraft.bingo.BingoState;
 import fr.bingocraft.race.Race;
 import fr.bingocraft.race.RaceManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.LoreComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -151,7 +152,10 @@ public class CardScreenHandler extends GenericContainerScreenHandler {
                 : done
                         ? Text.translatable("bingocraft.screen.goal.done").formatted(Formatting.GREEN)
                         : Text.translatable("bingocraft.screen.goal.todo").formatted(Formatting.GRAY);
-        stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(plain(status.copy()))));
+        stack.set(DataComponentTypes.LORE, new LoreComponent(List.of(
+                plain(status.copy()),
+                Text.literal(modName(card.goal(index).getNamespace())).styled(style -> style
+                        .withColor(Formatting.BLUE).withItalic(true)))));
         stack.set(DataComponentTypes.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
         if (done) stack.set(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
         return stack;
@@ -168,6 +172,14 @@ public class CardScreenHandler extends GenericContainerScreenHandler {
         for (Text line : info) lore.add(plain(line.copy()));
         stack.set(DataComponentTypes.LORE, new LoreComponent(lore));
         return stack;
+    }
+
+    /** Name of the mod an item comes from ("Minecraft" for vanilla), as Mod Menu shows it. */
+    private static String modName(String namespace) {
+        if ("minecraft".equals(namespace)) return "Minecraft";
+        return FabricLoader.getInstance().getModContainer(namespace)
+                .map(mod -> mod.getMetadata().getName())
+                .orElse(namespace);
     }
 
     /** Item names and lore are italic by default; card text is not. */

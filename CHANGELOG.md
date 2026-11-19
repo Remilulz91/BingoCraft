@@ -2,6 +2,15 @@
 
 All notable changes to BingoCraft will be documented in this file.
 
+## [0.6.0-alpha.1] — 2026-11-19
+
+### Added
+- **Race scoreboard** on the right of the screen (vanilla sidebar): race clock on top, then every
+  team with its squares (`7/25`), best team first. Shown from `/bingo start` until the return to
+  spawn; the clock freezes on the winning time.
+- The card view shows **which mod each item comes from** (blue italic line, "Minecraft" for vanilla),
+  like Mod Menu does.
+
 ## [0.5.1-alpha.1] — 2026-11-17
 
 ### Fixed

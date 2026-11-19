@@ -92,6 +92,7 @@ public final class RaceManager {
             return;
         }
         if (server.getTicks() % 20 != 0) return;
+        RaceSidebar.update(server, race, now - race.startTime());
 
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             String team = race.teamOf(player.getUuid());
@@ -130,6 +131,7 @@ public final class RaceManager {
 
         ServerWorld world = server.getOverworld();
         race.begin(world.getTime());
+        RaceSidebar.update(server, race, 0);
         int radius = Math.max(16, BingoCraftConfig.get().raceSpawnRadius);
         for (String team : race.teams()) race.setSpawn(team, SpawnFinder.find(world, RANDOM, radius));
         state.raceChanged();
@@ -208,6 +210,7 @@ public final class RaceManager {
         Race race = new Race(card);
         for (ServerPlayerEntity p : racers) race.addMember(p.getUuid(), Teams.of(p).id());
         state.setRace(race);
+        RaceSidebar.update(server, race, 0);
 
         for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
             if (p.currentScreenHandler instanceof CardScreenHandler) p.closeHandledScreen();
@@ -235,6 +238,7 @@ public final class RaceManager {
     private static void reset(MinecraftServer server, BingoState state) {
         state.setRace(null);
         state.setMode(BingoMode.NONE);
+        RaceSidebar.remove(server);
         ServerWorld world = server.getOverworld();
         BlockPos spawn = world.getSpawnPos();
         world.getChunk(spawn.getX() >> 4, spawn.getZ() >> 4);
@@ -285,6 +289,7 @@ public final class RaceManager {
         String team = race != null ? race.teamOf(player.getUuid()) : null;
         if (team == null || !card.markDone(index)) return;
         state.raceChanged();
+        RaceSidebar.update(server, race, server.getOverworld().getTime() - race.startTime());
 
         // The team learns which item; everybody else only that the team scored.
         Text forTeam = Text.translatable("bingocraft.race.goal_done",
@@ -315,6 +320,7 @@ public final class RaceManager {
         for (Map.Entry<UUID, String> e : race.members().entrySet()) if (e.getValue().equals(team)) winners.add(e.getKey());
         race.finish(server.getOverworld().getTime());
         state.raceChanged();
+        RaceSidebar.update(server, race, race.finishedAt() - race.startTime()); // clock frozen on the winning time
         for (ServerPlayerEntity p : server.getPlayerManager().getPlayerList()) {
             if (p.currentScreenHandler instanceof CardScreenHandler) p.closeHandledScreen();
         }
