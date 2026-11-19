@@ -22,8 +22,11 @@ import net.minecraft.util.Formatting;
 public final class RaceSidebar {
 
     private static final String OBJECTIVE = "bingocraft_race";
-    private static final ScoreHolder CLOCK = ScoreHolder.fromName("#bingo_clock");
-    private static final ScoreHolder SPACER = ScoreHolder.fromName("#bingo_spacer");
+    // Holder names must NOT start with '#': the vanilla sidebar hides those entries. A '.' can't
+    // be in a player name, so these never collide with a real player; the shown text is the
+    // display text, not the holder name.
+    private static final ScoreHolder CLOCK = ScoreHolder.fromName("bingo.clock");
+    private static final ScoreHolder SPACER = ScoreHolder.fromName("bingo.spacer");
     /** Above any team score (25 at most), so the clock and the spacer stay on top. */
     private static final int CLOCK_SCORE = 1001;
     private static final int SPACER_SCORE = 1000;
@@ -48,7 +51,7 @@ public final class RaceSidebar {
         for (String team : race.teams()) {
             BingoCard card = race.card(team);
             BingoTeam bingoTeam = BingoTeam.byId(team);
-            ScoreAccess score = scoreboard.getOrCreateScore(ScoreHolder.fromName("#bingo_" + team), objective);
+            ScoreAccess score = scoreboard.getOrCreateScore(ScoreHolder.fromName("bingo.team." + team), objective);
             score.setScore(card.completedCount());
             score.setDisplayText(Text.literal("■ ").formatted(bingoTeam != null ? bingoTeam.color() : Formatting.WHITE)
                     .append(RaceManager.teamName(team)));
